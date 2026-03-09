@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="theme-color" content="#0f172a"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>College Attendance Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --bg:#0f172a;
+  --bg2:#1e293b;
+  --bg3:#263249;
+  --card:#1e293b;
+  --card2:#263249;
+  --border:#334155;
+  --border2:#3f5170;
+  --indigo:#6366f1;
+  --indigo-light:#818cf8;
+  --indigo-dim:rgba(99,102,241,.15);
+  --indigo-glow:rgba(99,102,241,.25);
+  --green:#22c55e;
+  --green-dim:rgba(34,197,94,.12);
+  --green-border:rgba(34,197,94,.3);
+  --red:#f43f5e;
+  --red-dim:rgba(244,63,94,.12);
+  --red-border:rgba(244,63,94,.3);
+  --amber:#f59e0b;
+  --amber-dim:rgba(245,158,11,.12);
+  --amber-border:rgba(245,158,11,.3);
+  --sky:#38bdf8;
+  --text:#f1f5f9;
+  --text2:#94a3b8;
+  --text3:#64748b;
+  --r:14px;
+  --r2:10px;
+  --sh:0 4px 24px rgba(0,0,0,.35);
+  --sh2:0 8px 40px rgba(0,0,0,.45);
+  --mono:'Fira Code',monospace;
+  --sans:'Plus Jakarta Sans',sans-serif;
+}
+/* ─── LIGHT THEME ─── */
+html.light{
+  --bg:#f1f5f9;
+  --bg2:#ffffff;
+  --bg3:#e2e8f0;
+  --card:#ffffff;
+  --card2:#f8fafc;
+  --border:#cbd5e1;
+  --border2:#94a3b8;
+  --indigo:#4f46e5;
+  --indigo-light:#4f46e5;
+  --indigo-dim:rgba(79,70,229,.08);
+  --indigo-glow:rgba(79,70,229,.2);
+  --green:#16a34a;
+  --green-dim:rgba(22,163,74,.1);
+  --green-border:rgba(22,163,74,.35);
+  --red:#dc2626;
+  --red-dim:rgba(220,38,38,.08);
+  --red-border:rgba(220,38,38,.3);
+  --amber:#b45309;
+  --amber-dim:rgba(180,83,9,.08);
+  --amber-border:rgba(180,83,9,.3);
+  --sky:#0284c7;
+  --text:#0f172a;
+  --text2:#475569;
+  --text3:#94a3b8;
+  --sh:0 2px 12px rgba(0,0,0,.07),0 1px 3px rgba(0,0,0,.05);
+  --sh2:0 6px 28px rgba(0,0,0,.11),0 2px 8px rgba(0,0,0,.06);
+}
+html.light body::before{opacity:.15}
+html.light body::after{background:radial-gradient(circle,rgba(79,70,229,.04) 0%,transparent 70%)}
+html.light .header{background:rgba(255,255,255,.9)}
+html.light .hero{background:linear-gradient(160deg,rgba(79,70,229,.05) 0%,rgba(241,245,249,0) 60%)}
+html.light .tab:hover:not(.on){background:rgba(0,0,0,.05)}
+
+/* ─── SMOOTH THEME TRANSITIONS ─── */
+body,body::before,body::after,.header,.card,.field input,.field select,
+.tabs,.tab,.hc,.hero,.panel-tag,.advice,.prog-track,.sp,.bd,
+.fut-stat,.gauge-track,.hol-tag,.stepper button,.btn-xs,.footer,.ring-bg,.bcirc{
+  transition:background .28s ease,border-color .28s ease,color .22s ease,box-shadow .28s ease !important;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  min-height:100vh;
+  overflow-x:hidden;
+  line-height:1.5;
+}
+
+/* ─── NOISE TEXTURE OVERLAY ─── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.4;
+}
+
+/* ─── GLOW ORBS ─── */
+body::after{
+  content:'';position:fixed;
+  top:-30vh;right:-20vw;
+  width:70vw;height:70vw;max-width:700px;max-height:700px;
+  background:radial-gradient(circle,rgba(99,102,241,.08) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ─── HEADER ─── */
+.header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(15,23,42,.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 20px;
+}
+.header-inner{
+  max-width:1080px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;gap:12px;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--indigo),#a78bfa);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;
+  box-shadow:0 0 20px var(--indigo-glow);
+  flex-shrink:0;
+}
+.logo-text{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.logo-sub{font-size:10px;color:var(--text2);font-family:var(--mono);letter-spacing:.5px}
+
+.tabs{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:4px}
+.tab{
+  padding:7px 16px;border:none;cursor:pointer;
+  border-radius:8px;background:transparent;
+  font-family:var(--sans);font-size:12.5px;font-weight:600;
+  color:var(--text2);transition:all .2s;white-space:nowrap;
+}
+.tab.on{background:var(--indigo);color:#fff;box-shadow:0 2px 12px var(--indigo-glow)}
+.tab:hover:not(.on){color:var(--text);background:rgba(255,255,255,.06)}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;z-index:1;
+  background:linear-gradient(160deg,rgba(99,102,241,.06) 0%,transparent 60%);
+  border-bottom:1px solid var(--border);
+  padding:40px 20px 32px;
+}
+.hero-inner{max-width:1080px;margin:0 auto}
+.hero h1{
+  font-size:clamp(26px,5vw,46px);font-weight:800;
+  letter-spacing:-1px;line-height:1.15;margin-bottom:10px;
+}
+.hero h1 span{
+  background:linear-gradient(135deg,var(--indigo-light),#a78bfa,var(--sky));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero p{color:var(--text2);font-size:15px;margin-bottom:28px}
+
+.hero-cards{display:flex;gap:12px;flex-wrap:wrap}
+.hc{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r2);padding:14px 20px;
+  min-width:110px;flex:1;max-width:160px;
+  transition:border-color .2s,transform .2s;
+}
+.hc:hover{border-color:var(--border2);transform:translateY(-2px)}
+.hc-n{font-family:var(--mono);font-size:24px;font-weight:600;display:block;margin-bottom:2px}
+.hc-l{font-size:11px;color:var(--text2);font-weight:500}
+.hc-n.g{color:var(--green)}.hc-n.r{color:var(--red)}.hc-n.i{color:var(--indigo-light)}
+
+/* ─── MAIN ─── */
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:36px 20px 80px}
+
+/* ─── PANEL ─── */
+.panel{display:none;animation:up .32s ease}
+.panel.on{display:block}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.panel-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--indigo-dim);border:1px solid var(--indigo-glow);
+  border-radius:30px;padding:4px 14px;
+  font-size:11px;font-family:var(--mono);font-weight:500;
+  color:var(--indigo-light);letter-spacing:.5px;margin-bottom:12px;
+}
+.panel-title{
+  font-size:clamp(22px,4vw,34px);font-weight:800;
+  letter-spacing:-.5px;margin-bottom:32px;line-height:1.2;
+}
+.panel-title em{font-style:normal;color:var(--indigo-light)}
+
+/* ─── GRID ─── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+
+/* ─── CARD ─── */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:24px;
+  box-shadow:var(--sh);
+  transition:border-color .2s,box-shadow .2s;
+}
+.card:hover{border-color:var(--border2);box-shadow:var(--sh2)}
+.card-hd{
+  font-size:10.5px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--indigo-light);
+  font-family:var(--mono);margin-bottom:18px;
+  padding-bottom:12px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.card-hd::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--indigo);box-shadow:0 0 8px var(--indigo)}
+
+.res-card{min-height:360px;display:flex;flex-direction:column;justify-content:center}
+
+/* ─── FIELD ─── */
+.field{margin-bottom:14px}
+.field label{
+  display:block;font-size:12px;font-weight:600;
+  color:var(--text2);margin-bottom:6px;letter-spacing:.2px;
+}
+.field input,.field select{
+  width:100%;padding:11px 14px;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r2);color:var(--text);
+  font-family:var(--mono);font-size:15px;font-weight:500;
+  outline:none;transition:border-color .2s,box-shadow .2s;
+  appearance:none;
+}
+.field input:focus,.field select:focus{
+  border-color:var(--indigo);
+  box-shadow:0 0 0 3px var(--indigo-dim);
+  background:var(--bg2);
+}
+.field input[type=date]{font-family:var(--sans);font-size:13px}
+.ico-field{position:relative}
+.ico-field .ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none}
+.ico-field input{padding-left:40px}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ─── BUTTON ─── */
+.btn{
+  width:100%;padding:13px;
+  background:linear-gradient(135deg,var(--indigo),#7c3aed);
+  border:none;border-radius:var(--r2);
+  color:#fff;font-family:var(--sans);font-size:14.5px;font-weight:700;
+  cursor:pointer;letter-spacing:.2px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 20px var(--indigo-glow);
+  transition:transform .18s,box-shadow .18s;
+  margin-top:6px;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,.4)}
+.btn:active{transform:translateY(0)}
+.btn .arr{font-size:18px;transition:transform .2s}
+.btn:hover .arr{transform:translateX(4px)}
+
+.btn-xs{
+  padding:8px 14px;background:var(--bg3);
+  border:1px solid var(--border);border-radius:8px;
+  color:var(--indigo-light);font-family:var(--sans);font-size:12px;
+  font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;
+}
+.btn-xs:hover{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+
+/* ─── EMPTY STATE ─── */
+.empty{
+  text-align:center;padding:40px 20px;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+.empty-ico{
+  width:64px;height:64px;border-radius:18px;
+  background:var(--bg3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:28px;
+}
+.empty p{color:var(--text2);font-size:13.5px;line-height:1.6;max-width:200px}
+
+/* ─── DONUT RING ─── */
+.ring-wrap{
+  position:relative;width:148px;height:148px;
+  margin:0 auto 20px;
+  filter:drop-shadow(0 0 20px var(--indigo-glow));
+}
+.ring-svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--bg3);stroke-width:11}
+.ring-fg{
+  fill:none;stroke-width:11;stroke-linecap:round;
+  transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1),stroke .4s;
+}
+.ring-center{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);text-align:center;
+}
+.ring-pct{display:block;font-family:var(--mono);font-size:26px;font-weight:600;line-height:1}
+.ring-lbl{display:block;font-size:10px;color:var(--text2);margin-top:3px;font-family:var(--mono)}
+
+/* ─── VERDICT ─── */
+.verdict{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 18px;border-radius:30px;
+  font-size:13.5px;font-weight:700;margin-bottom:18px;
+  transition:all .3s;
+}
+.v-safe{background:var(--green-dim);border:1px solid var(--green-border);color:var(--green)}
+.v-warn{background:var(--amber-dim);border:1px solid var(--amber-border);color:var(--amber)}
+.v-bad {background:var(--red-dim)  ;border:1px solid var(--red-border)  ;color:var(--red)}
+
+/* ─── STAT PILLS ─── */
+.stats3{display:flex;gap:8px;margin-bottom:18px}
+.sp{
+  flex:1;background:var(--bg);border:1px solid var(--border);
+  border-radius:10px;padding:11px 8px;text-align:center;
+}
+.sp-v{display:block;font-family:var(--mono);font-size:19px;font-weight:600}
+.sp-l{display:block;font-size:10.5px;color:var(--text2);margin-top:2px;font-weight:500}
+.sp-v.g{color:var(--green)}.sp-v.r{color:var(--red)}.sp-v.b{color:var(--sky)}
+
+/* ─── PROGRESS BAR ─── */
+.prog{margin-bottom:16px}
+.prog-top{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text2);margin-bottom:6px;font-weight:600}
+.prog-top span:last-child{color:var(--indigo-light);font-family:var(--mono)}
+.prog-track{
+  position:relative;height:10px;
+  background:var(--bg);border-radius:30px;
+  border:1px solid var(--border);overflow:visible;
+}
+.prog-fill{
+  position:absolute;inset:0;border-radius:30px;
+  background:linear-gradient(90deg,var(--indigo),#a78bfa);
+  transition:width 1.1s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 12px var(--indigo-glow);
+}
+.prog-mark{
+  position:absolute;top:-5px;width:2px;height:20px;
+  background:var(--amber);border-radius:2px;
+  box-shadow:0 0 8px var(--amber);transition:left .5s;
+}
+.prog-mark::after{
+  content:'Min';position:absolute;top:-15px;left:50%;
+  transform:translateX(-50%);font-size:9px;color:var(--amber);
+  font-family:var(--mono);font-weight:600;white-space:nowrap;
+}
+.prog-ends{display:flex;justify-content:space-between;font-size:10.5px;color:var(--text3);margin-top:5px;font-family:var(--mono)}
+
+/* ─── ADVICE BOX ─── */
+.advice{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r2);padding:13px 16px;
+  font-size:13px;line-height:1.7;color:var(--text2);
+  font-weight:500;
+}
+.advice b{color:var(--text);font-weight:700}
+.advice .ok{color:var(--green);font-weight:700}
+.advice .bad{color:var(--red);font-weight:700}
+.advice .note{color:var(--indigo-light);font-weight:700}
+
+/* ─── DAY STEPPERS ─── */
+.days-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px}
+.day-box{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:10px;padding:10px 6px;
+  display:flex;flex-direction:column;align-items:center;gap:7px;
+  transition:border-color .2s;
+}
+.day-box:hover{border-color:var(--indigo)}
+.dn{font-size:11.5px;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase}
+.stepper{display:flex;align-items:center;gap:5px}
+.stepper button{
+  width:24px;height:24px;border-radius:7px;
+  border:1px solid var(--border);background:var(--card);
+  color:var(--text);font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;font-weight:700;line-height:1;flex-shrink:0;padding:0;
+}
+.stepper button:hover{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+.stepper span{
+  width:22px;text-align:center;
+  font-family:var(--mono);font-size:15px;font-weight:600;color:var(--indigo-light);
+}
+
+/* ─── HOLIDAYS ─── */
+.hol-row{display:flex;gap:7px;align-items:center}
+.hol-row input{
+  flex:1;padding:9px 12px;background:var(--bg);
+  border:1px solid var(--border);border-radius:8px;
+  font-family:var(--sans);font-size:13px;color:var(--text);
+  outline:none;transition:border-color .2s;
+}
+.hol-row input:focus{border-color:var(--indigo)}
+.hol-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.hol-tag{
+  background:var(--indigo-dim);border:1px solid var(--indigo-glow);
+  border-radius:20px;padding:3px 10px;
+  font-size:11px;font-family:var(--mono);color:var(--indigo-light);
+  display:flex;align-items:center;gap:5px;
+}
+.hol-tag button{
+  background:none;border:none;cursor:pointer;
+  color:var(--indigo-light);font-size:13px;padding:0;
+  line-height:1;font-weight:700;
+}
+
+/* ─── FUTURE STATS ─── */
+.fut-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.fut-stat{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:10px;padding:12px;text-align:center;
+}
+.fut-stat .fv{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--text)}
+.fut-stat .fl{font-size:10.5px;color:var(--text2);margin-top:3px;font-weight:500}
+.scenario{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r2);padding:13px;margin-bottom:14px;
+}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0}
+.sc-row+.sc-row{border-top:1px solid var(--border)}
+.sc-l{font-size:12.5px;color:var(--text2);font-weight:500}
+.sc-v{font-family:var(--mono);font-size:15px;font-weight:700}
+.sc-v.g{color:var(--green)}.sc-v.r{color:var(--red)}
+
+/* ─── BUNK SECTION ─── */
+.bunk-circles{
+  display:flex;align-items:center;justify-content:center;
+  gap:18px;margin-bottom:20px;
+}
+.bcirc{
+  width:108px;height:108px;border-radius:50%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  border:2.5px solid;flex-shrink:0;
+  animation:popIn .4s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.bcirc.g{background:var(--green-dim);border-color:var(--green-border)}
+.bcirc.r{background:var(--red-dim);border-color:var(--red-border);animation-delay:.1s}
+.bc-n{font-family:var(--mono);font-size:30px;font-weight:700}
+.bcirc.g .bc-n{color:var(--green)}.bcirc.r .bc-n{color:var(--red)}
+.bc-l{font-size:11px;font-weight:600;color:var(--text2);margin-top:2px}
+.bvs{font-size:13px;color:var(--text3);font-weight:700}
+
+.bunk-details{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.bd{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px}
+.bd-l{font-size:10.5px;color:var(--text2);font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono)}
+.bd-v{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--text)}
+
+/* ─── GAUGE ─── */
+.gauge{margin-bottom:14px}
+.gauge-lbl{font-size:10.5px;font-weight:700;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono)}
+.gauge-track{
+  position:relative;height:16px;border-radius:30px;
+  border:1px solid var(--border);overflow:visible;
+  background:var(--bg);
+}
+.g-red{
+  position:absolute;left:0;top:0;bottom:0;
+  border-radius:30px 0 0 30px;
+  background:linear-gradient(90deg,rgba(244,63,94,.25),rgba(244,63,94,.1));
+}
+.g-green{
+  position:absolute;right:0;top:0;bottom:0;
+  border-radius:0 30px 30px 0;
+  background:linear-gradient(90deg,rgba(34,197,94,.1),rgba(34,197,94,.25));
+}
+.g-needle{
+  position:absolute;top:-5px;width:3px;height:26px;
+  background:var(--text);border-radius:3px;
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
+  transition:left 1s cubic-bezier(.4,0,.2,1);z-index:2;
+}
+.g-needle::after{
+  content:'You';position:absolute;top:-17px;left:50%;
+  transform:translateX(-50%);font-size:9px;color:var(--text);
+  font-family:var(--mono);font-weight:600;white-space:nowrap;
+}
+.g-min{
+  position:absolute;top:-4px;width:2px;height:24px;
+  background:var(--amber);border-radius:2px;
+  box-shadow:0 0 6px var(--amber);z-index:3;
+}
+.gauge-ends{display:flex;justify-content:space-between;font-size:10.5px;color:var(--text3);margin-top:5px;font-family:var(--mono);font-weight:500}
+
+/* ─── SECTION DIVIDER ─── */
+.sdiv{
+  text-align:center;margin:32px 0;
+  display:flex;align-items:center;gap:14px;
+  color:var(--text3);font-size:12px;font-family:var(--mono);
+}
+.sdiv::before,.sdiv::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ─── FOOTER ─── */
+.footer{
+  text-align:center;padding:22px 16px;
+  font-size:12px;color:var(--text3);
+  border-top:1px solid var(--border);
+  font-family:var(--mono);
+}
+.net-dot{color:var(--green)}.net-dot.off{color:var(--text3)}
+
+/* ─── TOAST ─── */
+.toast{
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(70px);
+  background:var(--card2);border:1px solid var(--border2);
+  color:var(--text);padding:10px 22px;border-radius:30px;
+  font-size:13px;font-family:var(--sans);font-weight:600;
+  box-shadow:var(--sh2);z-index:999;white-space:nowrap;
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;
+}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:600px){
+  .header-inner{height:56px}
+  .logo-text{font-size:14px}
+  .tab{padding:6px 12px;font-size:11.5px}
+  .hero{padding:28px 16px 22px}
+  .hero h1{font-size:24px}
+  .hc-n{font-size:20px}
+  .wrap{padding:24px 14px 60px}
+  .card{padding:18px}
+  .days-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+  .bunk-circles{gap:12px}
+  .bcirc{width:92px;height:92px}
+  .bc-n{font-size:26px}
+  .g2{grid-template-columns:1fr}
+  .stats3{gap:6px}
+  .hero-cards{gap:8px}
+  .hc{padding:11px 14px}
+}
+@media(max-width:360px){
+  .tabs{gap:2px}
+  .tab{padding:6px 10px;font-size:11px}
+  .hero-cards{flex-wrap:wrap}
+  .hc{flex:none;width:calc(50% - 4px)}
+}
+
+/* ─── THEME TOGGLE BUTTON ─── */
+.theme-btn{
+  width:36px;height:36px;border-radius:10px;
+  border:1px solid var(--border);background:var(--bg3);
+  color:var(--text);font-size:17px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;flex-shrink:0;
+}
+.theme-btn:hover{border-color:var(--indigo);background:var(--indigo-dim);transform:rotate(20deg)}
+
+/* ─── NA INFO BOX ─── */
+.na-box{
+  background:var(--amber-dim);border:1px solid var(--amber-border);
+  border-radius:var(--r2);padding:10px 14px;
+  font-size:12px;color:var(--amber);font-weight:600;
+  margin-top:-6px;margin-bottom:14px;
+  display:flex;align-items:flex-start;gap:8px;line-height:1.5;
+}
+.na-box .na-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.na-breakdown{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:10px 14px;margin-bottom:12px;
+  display:flex;flex-direction:column;gap:5px;
+}
+.na-row{display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.na-row .nar-l{color:var(--text2);font-weight:500}
+.na-row .nar-v{font-family:var(--mono);font-weight:600;color:var(--text)}
+.na-row .nar-v.strike{text-decoration:line-through;color:var(--text3);font-size:11px}
+.na-row .nar-v.amber{color:var(--amber)}
+.na-row .nar-v.eff{color:var(--indigo-light)}
+.na-sep{height:1px;background:var(--border);margin:3px 0}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🎓</div>
+      <div>
+        <div class="logo-text">AttendCalc</div>
+        <div class="logo-sub">Attendance Suite</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle dark/light mode">🌙</button>
+      <div class="tabs">
+        <button class="tab on" onclick="goTab('cur',this)">Current</button>
+        <button class="tab"    onclick="goTab('fut',this)">Future</button>
+        <button class="tab"    onclick="goTab('bk',this)">Bunk Plan</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <h1>College Attendance<br><span>Calculator</span></h1>
+    <p>Track your current percentage · predict your future · plan smart bunks</p>
+    <div class="hero-cards">
+      <div class="hc"><span class="hc-n i" id="h-pct">—</span><span class="hc-l">Current %</span></div>
+      <div class="hc"><span class="hc-n g" id="h-bunk">—</span><span class="hc-l">Can Bunk</span></div>
+      <div class="hc"><span class="hc-n r" id="h-need">—</span><span class="hc-l">Must Attend</span></div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+
+<!-- ══════ PANEL 1: CURRENT ══════ -->
+<div class="panel on" id="p-cur">
+  <div class="panel-tag">01 · Current Attendance</div>
+  <h2 class="panel-title">What's My Attendance <em>Right Now?</em></h2>
+
+  <div class="grid2">
+    <!-- Input Card -->
+    <div class="card">
+      <div class="card-hd">Enter Your Data</div>
+
+      <div class="field">
+        <label>Total Classes Conducted</label>
+        <div class="ico-field">
+          <span class="ico">📚</span>
+          <input type="number" id="c-total" placeholder="e.g. 120" min="0" inputmode="numeric"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Classes You Attended</label>
+        <div class="ico-field">
+          <span class="ico">✅</span>
+          <input type="number" id="c-att" placeholder="e.g. 90" min="0" inputmode="numeric"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>NA Classes <span style="color:var(--text3)">(Not Applicable — exam/duty leaves)</span></label>
+        <div class="ico-field">
+          <span class="ico">🚫</span>
+          <input type="number" id="c-na" placeholder="e.g. 10" min="0" value="0" inputmode="numeric"/>
+        </div>
+      </div>
+      <div class="na-box">
+        <span class="na-icon">💡</span>
+        <span>NA classes are lectures held during <b>exam duty, university events or official leaves</b> — they are subtracted from the total conducted before calculating your %.</span>
+      </div>
+      <div class="field">
+        <label>Minimum Required % <span style="color:var(--text3)">(default 75)</span></label>
+        <div class="ico-field">
+          <span class="ico">🎯</span>
+          <input type="number" id="c-min" value="75" min="1" max="100" inputmode="numeric"/>
+        </div>
+      </div>
+
+      <button class="btn" onclick="doCur()">
+        Calculate Attendance <span class="arr">→</span>
+      </button>
+    </div>
+
+    <!-- Result Card -->
+    <div class="card res-card">
+      <div class="empty" id="c-empty">
+        <div class="empty-ico">📊</div>
+        <p>Enter your class data and tap <b>Calculate</b> to see results</p>
+      </div>
+      <div id="c-out" style="display:none">
+        <div class="ring-wrap">
+          <svg class="ring-svg" viewBox="0 0 148 148" width="148" height="148">
+            <circle class="ring-bg" cx="74" cy="74" r="63"/>
+            <circle class="ring-fg" id="c-ring" cx="74" cy="74" r="63" stroke-dasharray="395.84" stroke-dashoffset="395.84"/>
+          </svg>
+          <div class="ring-center">
+            <span class="ring-pct" id="c-pct">0%</span>
+            <span class="ring-lbl">attendance</span>
+          </div>
+        </div>
+
+        <div class="verdict" id="c-verdict"></div>
+
+        <div class="na-breakdown" id="c-na-breakdown" style="display:none"></div>
+
+        <div class="stats3">
+          <div class="sp"><span class="sp-v g" id="c-sa">0</span><span class="sp-l">Attended</span></div>
+          <div class="sp"><span class="sp-v r" id="c-sm">0</span><span class="sp-l">Missed</span></div>
+          <div class="sp"><span class="sp-v b" id="c-st">0</span><span class="sp-l">Effective</span></div>
+          <div class="sp"><span class="sp-v" style="color:var(--amber)" id="c-sna">0</span><span class="sp-l">NA</span></div>
+        </div>
+
+        <div class="prog">
+          <div class="prog-top"><span>Progress</span><span id="c-min-lbl">Min: 75%</span></div>
+          <div class="prog-track">
+            <div class="prog-fill" id="c-fill" style="width:0%"></div>
+            <div class="prog-mark" id="c-mark"></div>
+          </div>
+          <div class="prog-ends"><span>0%</span><span>100%</span></div>
+        </div>
+
+        <div class="advice" id="c-advice"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ PANEL 2: FUTURE ══════ -->
+<div class="panel" id="p-fut">
+  <div class="panel-tag">02 · Future Predictor</div>
+  <h2 class="panel-title">Where Will My Attendance <em>End Up?</em></h2>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-hd">Current Snapshot</div>
+      <div class="g2">
+        <div class="field"><label>Total Classes So Far</label><input type="number" id="f-total" placeholder="e.g. 80" inputmode="numeric"/></div>
+        <div class="field"><label>Classes Attended</label><input type="number" id="f-att" placeholder="e.g. 60" inputmode="numeric"/></div>
+      </div>
+
+      <div class="card-hd" style="margin-top:18px">Daily Lecture Schedule</div>
+      <div class="days-grid">
+        <div class="day-box"><span class="dn">Mon</span><div class="stepper"><button onclick="sd('mon',-1)">−</button><span id="d-mon">0</span><button onclick="sd('mon',1)">+</button></div></div>
+        <div class="day-box"><span class="dn">Tue</span><div class="stepper"><button onclick="sd('tue',-1)">−</button><span id="d-tue">0</span><button onclick="sd('tue',1)">+</button></div></div>
+        <div class="day-box"><span class="dn">Wed</span><div class="stepper"><button onclick="sd('wed',-1)">−</button><span id="d-wed">0</span><button onclick="sd('wed',1)">+</button></div></div>
+        <div class="day-box"><span class="dn">Thu</span><div class="stepper"><button onclick="sd('thu',-1)">−</button><span id="d-thu">0</span><button onclick="sd('thu',1)">+</button></div></div>
+        <div class="day-box"><span class="dn">Fri</span><div class="stepper"><button onclick="sd('fri',-1)">−</button><span id="d-fri">0</span><button onclick="sd('fri',1)">+</button></div></div>
+        <div class="day-box"><span class="dn">Sat</span><div class="stepper"><button onclick="sd('sat',-1)">−</button><span id="d-sat">0</span><button onclick="sd('sat',1)">+</button></div></div>
+      </div>
+
+      <div class="card-hd" style="margin-top:18px">Semester Timeline</div>
+      <div class="field"><label>End Date of Semester</label><input type="date" id="f-end"/></div>
+      <div class="field">
+        <label>Mark Holidays / Off Days</label>
+        <div class="hol-row">
+          <input type="date" id="hol-inp"/>
+          <button class="btn-xs" onclick="addHol()">+ Add</button>
+        </div>
+        <div class="hol-tags" id="hol-tags"></div>
+      </div>
+      <div class="field"><label>Minimum Required %</label><input type="number" id="f-min" value="75" min="1" max="100" inputmode="numeric"/></div>
+
+      <button class="btn" onclick="doFut()">Predict Attendance <span class="arr">→</span></button>
+    </div>
+
+    <div class="card res-card">
+      <div class="empty" id="f-empty">
+        <div class="empty-ico">📅</div>
+        <p>Set your schedule and end date, then tap <b>Predict</b></p>
+      </div>
+      <div id="f-out" style="display:none">
+        <div class="ring-wrap">
+          <svg class="ring-svg" viewBox="0 0 148 148" width="148" height="148">
+            <circle class="ring-bg" cx="74" cy="74" r="63"/>
+            <circle class="ring-fg" id="f-ring" cx="74" cy="74" r="63" stroke-dasharray="395.84" stroke-dashoffset="395.84"/>
+          </svg>
+          <div class="ring-center">
+            <span class="ring-pct" id="f-pct">0%</span>
+            <span class="ring-lbl">predicted</span>
+          </div>
+        </div>
+
+        <div class="verdict" id="f-verdict"></div>
+
+        <div class="fut-grid" id="f-grid"></div>
+
+        <div class="scenario" id="f-scenario"></div>
+
+        <div class="advice" id="f-advice"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ PANEL 3: BUNK ══════ -->
+<div class="panel" id="p-bk">
+  <div class="panel-tag">03 · Bunk Planner</div>
+  <h2 class="panel-title">How Many Can I <em>Skip?</em></h2>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-hd">Your Numbers</div>
+      <div class="g2">
+        <div class="field"><label>Total Classes</label><input type="number" id="b-total" placeholder="e.g. 120" inputmode="numeric"/></div>
+        <div class="field"><label>Classes Attended</label><input type="number" id="b-att" placeholder="e.g. 90" inputmode="numeric"/></div>
+      </div>
+      <div class="field"><label>Target Minimum %</label><input type="number" id="b-min" value="75" min="1" max="100" inputmode="numeric"/></div>
+      <button class="btn" onclick="doBunk()">Calculate Bunk Plan <span class="arr">→</span></button>
+    </div>
+
+    <div class="card res-card">
+      <div class="empty" id="b-empty">
+        <div class="empty-ico">🎒</div>
+        <p>Enter your numbers to see exactly how much you can bunk</p>
+      </div>
+      <div id="b-out" style="display:none">
+        <div class="bunk-circles">
+          <div class="bcirc g">
+            <span class="bc-n" id="b-can">0</span>
+            <span class="bc-l">Can Bunk</span>
+          </div>
+          <div class="bvs">vs</div>
+          <div class="bcirc r">
+            <span class="bc-n" id="b-need">0</span>
+            <span class="bc-l">Must Attend</span>
+          </div>
+        </div>
+
+        <div class="bunk-details" id="b-details"></div>
+
+        <div class="gauge">
+          <div class="gauge-lbl">Attendance Gauge</div>
+          <div class="gauge-track">
+            <div class="g-red" id="g-red"></div>
+            <div class="g-green" id="g-green"></div>
+            <div class="g-needle" id="g-needle"></div>
+            <div class="g-min" id="g-min"></div>
+          </div>
+          <div class="gauge-ends">
+            <span>0%</span>
+            <span id="g-crit">75%</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+        <div class="advice" id="b-advice"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer class="footer">
+  <span class="net-dot" id="net-dot">●</span>
+  <span id="net-lbl">Online</span>
+  &nbsp;·&nbsp; AttendCalc &nbsp;·&nbsp; Works Offline
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+const DS = {mon:0,tue:0,wed:0,thu:0,fri:0,sat:0};
+let HOLS = [];
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+window.addEventListener('load',()=>{
+  initTheme();
+  restore();
+  document.getElementById('f-end').min = new Date().toISOString().split('T')[0];
+  netCheck();
+  window.addEventListener('online',netCheck);
+  window.addEventListener('offline',netCheck);
+  registerSW();
+});
+
+/* ══════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════ */
+function goTab(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 1 — CURRENT
+══════════════════════════════════════════════ */
+function doCur(){
+  const tot = +document.getElementById('c-total').value||0;
+  const att = +document.getElementById('c-att').value||0;
+  const na  = +document.getElementById('c-na').value||0;
+  const min = +document.getElementById('c-min').value||75;
+
+  if(!tot){toast('⚠️ Enter total classes');return}
+  if(att<0){toast('⚠️ Attended cannot be negative');return}
+  if(na<0){toast('⚠️ NA classes cannot be negative');return}
+  if(na>=tot){toast('⚠️ NA classes cannot equal or exceed total');return}
+  if(att>tot-na){toast('⚠️ Attended > effective total (total − NA)');return}
+  if(min<1||min>100){toast('⚠️ Minimum % must be 1–100');return}
+
+  // Effective total = conducted − NA
+  const effTot = tot - na;
+  const pct    = att / effTot * 100;
+  const missed = effTot - att;
+
+  show('c-empty','c-out');
+
+  // Ring
+  spinRing('c-ring',pct,min,395.84);
+  eid('c-pct').textContent = pct.toFixed(1)+'%';
+
+  // Verdict
+  const vEl = eid('c-verdict');
+  if(pct>=min){
+    vEl.className='verdict v-safe';
+    vEl.innerHTML='✅ &nbsp;Safe Attendance';
+  } else if(pct>=min-10){
+    vEl.className='verdict v-warn';
+    vEl.innerHTML='⚠️ &nbsp;Borderline — Act Now';
+  } else {
+    vEl.className='verdict v-bad';
+    vEl.innerHTML='🚨 &nbsp;Low Attendance Warning';
+  }
+
+  // NA breakdown box
+  const nbEl = eid('c-na-breakdown');
+  if(na>0){
+    nbEl.style.display='flex';
+    nbEl.style.flexDirection='column';
+    nbEl.style.gap='5px';
+    nbEl.innerHTML=`
+      <div class="na-row"><span class="nar-l">Total Conducted</span><span class="nar-v strike">${tot}</span></div>
+      <div class="na-sep"></div>
+      <div class="na-row"><span class="nar-l">NA (exam/duty)</span><span class="nar-v amber">− ${na}</span></div>
+      <div class="na-sep"></div>
+      <div class="na-row"><span class="nar-l">Effective Total</span><span class="nar-v eff">${effTot} classes</span></div>
+    `;
+  } else {
+    nbEl.style.display='none';
+  }
+
+  // Stats
+  eid('c-sa').textContent  = att;
+  eid('c-sm').textContent  = missed;
+  eid('c-st').textContent  = effTot;
+  eid('c-sna').textContent = na;
+
+  // Progress bar
+  eid('c-fill').style.width=Math.min(pct,100)+'%';
+  eid('c-fill').style.background = pct>=min
+    ? 'linear-gradient(90deg,#6366f1,#a78bfa)'
+    : pct>=min-10
+      ? 'linear-gradient(90deg,#f59e0b,#fbbf24)'
+      : 'linear-gradient(90deg,#f43f5e,#fb7185)';
+  eid('c-mark').style.left=min+'%';
+  eid('c-min-lbl').textContent='Min: '+min+'%';
+
+  // Advice
+  const needed  = Math.ceil((min*effTot - 100*att)/(100-min));
+  const canSkip = Math.max(0,Math.floor((att - min/100*effTot)/(min/100)));
+  const adv=eid('c-advice');
+  const naNote = na>0 ? ` <span style="color:var(--amber);font-size:12px">(NA: ${na} classes excluded from total)</span>` : '';
+  if(pct>=min){
+    adv.innerHTML = canSkip>0
+      ? `You're at <b class="ok">${pct.toFixed(1)}%</b> — safely above the ${min}% limit.${naNote} You can skip up to <b class="ok">${canSkip} more class${canSkip>1?'es':''}</b> and still stay compliant. 😎`
+      : `You're <b class="ok">right at ${pct.toFixed(1)}%</b>.${naNote} Don't skip a single class — zero buffer left!`;
+  } else {
+    adv.innerHTML = `You're at <b class="bad">${pct.toFixed(1)}%</b>.${naNote} Attend the next <b class="bad">${needed} class${needed>1?'es':''}</b> without bunking any to reach <b>${min}%</b>. 📚`;
+  }
+
+  // Hero update
+  updateHero(pct,canSkip,pct>=min?0:needed);
+  save();
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 2 — FUTURE
+══════════════════════════════════════════════ */
+function sd(day,delta){
+  DS[day]=Math.max(0,(DS[day]||0)+delta);
+  eid('d-'+day).textContent=DS[day];
+  save();
+}
+
+function addHol(){
+  const v=eid('hol-inp').value;
+  if(!v){toast('📅 Pick a date first');return}
+  if(HOLS.includes(v)){toast('Already added!');return}
+  HOLS.push(v);
+  eid('hol-inp').value='';
+  renderHols();save();
+}
+function removeHol(d){HOLS=HOLS.filter(x=>x!==d);renderHols();save()}
+function renderHols(){
+  eid('hol-tags').innerHTML=HOLS.sort().map(d=>{
+    const disp=new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    return `<span class="hol-tag">${disp}<button onclick="removeHol('${d}')">×</button></span>`;
+  }).join('');
+}
+
+function doFut(){
+  const curTot=+eid('f-total').value||0;
+  const curAtt=+eid('f-att').value||0;
+  const endStr=eid('f-end').value;
+  const min=+eid('f-min').value||75;
+
+  if(!curTot){toast('⚠️ Enter current total classes');return}
+  if(curAtt>curTot){toast('⚠️ Attended > total');return}
+  if(!endStr){toast('⚠️ Pick a semester end date');return}
+
+  const perWeek=Object.values(DS).reduce((a,b)=>a+b,0);
+  if(!perWeek){toast('⚠️ Set at least one lecture per day');return}
+
+  const today=new Date();today.setHours(0,0,0,0);
+  const end=new Date(endStr+'T00:00:00');
+  if(end<=today){toast('⚠️ End date must be future');return}
+
+  // Count future classes
+  const dayMap=['sun','mon','tue','wed','thu','fri','sat'];
+  let futClasses=0;
+  const cur2=new Date(today);
+  while(cur2<=end){
+    const dk=dayMap[cur2.getDay()];
+    const ds=cur2.toISOString().split('T')[0];
+    if(DS[dk]&&!HOLS.includes(ds)) futClasses+=DS[dk];
+    cur2.setDate(cur2.getDate()+1);
+  }
+
+  const totFinal=curTot+futClasses;
+  const bestAtt=curAtt+futClasses;
+  const bestPct=bestAtt/totFinal*100;
+  const worstPct=curAtt/totFinal*100;
+  const daysLeft=Math.ceil((end-today)/864e5);
+  const holCount=HOLS.filter(d=>{const hd=new Date(d+'T00:00:00');return hd>today&&hd<=end}).length;
+
+  show('f-empty','f-out');
+
+  spinRing('f-ring',bestPct,min,395.84);
+  eid('f-pct').textContent=bestPct.toFixed(1)+'%';
+
+  const fvEl=eid('f-verdict');
+  if(bestPct>=min){fvEl.className='verdict v-safe';fvEl.innerHTML='✅ &nbsp;Safe — if you attend all future classes';}
+  else{fvEl.className='verdict v-bad';fvEl.innerHTML='🚨 &nbsp;Even perfect attendance won\'t reach '+min+'%';}
+
+  eid('f-grid').innerHTML=`
+    <div class="fut-stat"><div class="fv">${futClasses}</div><div class="fl">Future Classes</div></div>
+    <div class="fut-stat"><div class="fv">${totFinal}</div><div class="fl">Total by End</div></div>
+    <div class="fut-stat"><div class="fv">${daysLeft}</div><div class="fl">Days Left</div></div>
+    <div class="fut-stat"><div class="fv">${holCount}</div><div class="fl">Holidays Marked</div></div>
+  `;
+
+  eid('f-scenario').innerHTML=`
+    <div class="sc-row"><span class="sc-l">Best case (attend all future):</span><span class="sc-v g">${bestPct.toFixed(1)}%</span></div>
+    <div class="sc-row"><span class="sc-l">Worst case (skip all future):</span><span class="sc-v r">${worstPct.toFixed(1)}%</span></div>
+  `;
+
+  const needed=Math.max(0,Math.ceil((min*totFinal-100*curAtt)/(100-min)));
+  const adv=eid('f-advice');
+  if(bestPct>=min){
+    const maxSkip=Math.floor((curAtt-min/100*totFinal)/(min/100));
+    if(maxSkip>0){
+      adv.innerHTML=`Attending all future classes gets you to <b class="ok">${bestPct.toFixed(1)}%</b>. You can actually skip up to <b class="ok">${Math.min(maxSkip,futClasses)}</b> of the ${futClasses} upcoming classes and still stay above ${min}%.`;
+    } else {
+      adv.innerHTML=`You need to attend at least <b class="note">${needed}</b> of the <b>${futClasses}</b> future classes to cross ${min}%. Try not to miss any!`;
+    }
+  } else {
+    adv.innerHTML=`Even attending every single future class only gets you to <b class="bad">${bestPct.toFixed(1)}%</b>. Talk to your college — you may need to appeal for medical/genuine condonation of attendance.`;
+  }
+
+  save();
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 3 — BUNK
+══════════════════════════════════════════════ */
+function doBunk(){
+  const tot=+eid('b-total').value||0;
+  const att=+eid('b-att').value||0;
+  const min=+eid('b-min').value||75;
+
+  if(!tot){toast('⚠️ Enter total classes');return}
+  if(att>tot){toast('⚠️ Attended > total');return}
+  if(min<1||min>100){toast('⚠️ Min % must be 1–100');return}
+
+  const pct=att/tot*100;
+  const minNeeded=Math.ceil(min*tot/100);
+  const canBunk=Math.max(0,att-minNeeded);
+  const mustAtt=Math.max(0,minNeeded-att);
+
+  show('b-empty','b-out');
+
+  eid('b-can').textContent=canBunk;
+  eid('b-need').textContent=mustAtt;
+  eid('g-crit').textContent=min+'%';
+
+  eid('b-details').innerHTML=`
+    <div class="bd"><div class="bd-l">Current %</div><div class="bd-v" style="color:${pct>=min?'var(--green)':'var(--red)'}">${pct.toFixed(1)}%</div></div>
+    <div class="bd"><div class="bd-l">Min Needed</div><div class="bd-v">${minNeeded} classes</div></div>
+    <div class="bd"><div class="bd-l">You Attended</div><div class="bd-v">${att} / ${tot}</div></div>
+    <div class="bd"><div class="bd-l">Missed</div><div class="bd-v" style="color:var(--red)">${tot-att}</div></div>
+  `;
+
+  // Gauge
+  eid('g-needle').style.left=Math.min(Math.max(pct,0),100)+'%';
+  eid('g-min').style.left=min+'%';
+  eid('g-red').style.width=min+'%';
+  eid('g-green').style.width=(100-min)+'%';
+
+  // Advice
+  const adv=eid('b-advice');
+  if(pct>=min){
+    if(canBunk===0){
+      adv.innerHTML=`You're right at <b class="ok">${pct.toFixed(1)}%</b> — exactly at the limit. You cannot bunk a single class without dropping below ${min}%.`;
+    } else {
+      adv.innerHTML=`You're safe at <b class="ok">${pct.toFixed(1)}%</b>. Skip up to <b class="ok">${canBunk} class${canBunk>1?'es':''}</b> and you'll still be above ${min}%. After that, every class counts! 🎯`;
+    }
+  } else {
+    const needed=Math.ceil((min*tot-100*att)/(100-min));
+    adv.innerHTML=`You're at <b class="bad">${pct.toFixed(1)}%</b>. You must attend the next <b class="bad">${mustAtt} class${mustAtt>1?'es':''}</b> (assuming no new classes) to hit ${min}%. If the semester still has classes coming, attend at least <b>${needed}</b> consecutive ones. No bunking! 🚫`;
+  }
+
+  updateHero(pct,canBunk,mustAtt);
+  save();
+}
+
+/* ══════════════════════════════════════════════
+   THEME
+══════════════════════════════════════════════ */
+function initTheme(){
+  const saved = localStorage.getItem('ac_theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+  applyTheme(saved || (prefersDark ? 'dark' : 'light'), false);
+}
+function applyTheme(theme, showMsg=true){
+  const btn = eid('theme-btn');
+  if(theme==='light'){
+    document.documentElement.classList.add('light');
+    btn.textContent='☀️';
+    document.querySelector('meta[name="theme-color"]').content='#f1f5f9';
+  } else {
+    document.documentElement.classList.remove('light');
+    btn.textContent='🌙';
+    document.querySelector('meta[name="theme-color"]').content='#0f172a';
+  }
+  localStorage.setItem('ac_theme',theme);
+  if(showMsg) toast(theme==='light'?'☀️ Light mode':'🌙 Dark mode');
+}
+function toggleTheme(){
+  const isLight = document.documentElement.classList.contains('light');
+  applyTheme(isLight?'dark':'light');
+}
+
+/* ══════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════ */
+function eid(id){return document.getElementById(id)}
+
+function show(emptyId,outId){
+  eid(emptyId).style.display='none';
+  eid(outId).style.display='block';
+}
+
+function spinRing(id,pct,min,circ){
+  const ring=eid(id);
+  const offset=circ-(Math.min(pct,100)/100)*circ;
+  ring.style.transition='none';
+  ring.style.strokeDashoffset=circ;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    ring.style.transition='stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)';
+    ring.style.strokeDashoffset=offset;
+  }));
+  ring.style.stroke = pct>=min ? '#22c55e' : pct>=min-10 ? '#f59e0b' : '#f43f5e';
+}
+
+function updateHero(pct,canBunk,mustAtt){
+  eid('h-pct').textContent=pct.toFixed(1)+'%';
+  eid('h-bunk').textContent=canBunk;
+  eid('h-need').textContent=mustAtt;
+}
+
+function toast(msg){
+  const t=eid('toast');
+  t.textContent=msg;t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),2600);
+}
+
+function netCheck(){
+  const dot=eid('net-dot'),lbl=eid('net-lbl');
+  if(navigator.onLine){dot.className='net-dot';lbl.textContent='Online';}
+  else{dot.className='net-dot off';lbl.textContent='Offline';}
+}
+
+/* ══════════════════════════════════════════════
+   PERSISTENCE
+══════════════════════════════════════════════ */
+function save(){
+  try{
+    localStorage.setItem('ac_v3',JSON.stringify({
+      DS,HOLS,
+      cur:{tot:eid('c-total').value,att:eid('c-att').value,na:eid('c-na').value,min:eid('c-min').value},
+      fut:{tot:eid('f-total').value,att:eid('f-att').value,end:eid('f-end').value,min:eid('f-min').value},
+      bk:{tot:eid('b-total').value,att:eid('b-att').value,min:eid('b-min').value},
+      hero:{pct:eid('h-pct').textContent,bunk:eid('h-bunk').textContent,need:eid('h-need').textContent}
+    }));
+  }catch(e){}
+}
+
+function restore(){
+  try{
+    const raw=localStorage.getItem('ac_v3');
+    if(!raw)return;
+    const s=JSON.parse(raw);
+    if(s.DS){Object.assign(DS,s.DS);Object.keys(DS).forEach(d=>{const el=eid('d-'+d);if(el)el.textContent=DS[d];})}
+    if(s.HOLS){HOLS=s.HOLS;renderHols();}
+    if(s.cur){sv('c-total',s.cur.tot);sv('c-att',s.cur.att);sv('c-na',s.cur.na);sv('c-min',s.cur.min);}
+    if(s.fut){sv('f-total',s.fut.tot);sv('f-att',s.fut.att);sv('f-end',s.fut.end);sv('f-min',s.fut.min);}
+    if(s.bk){sv('b-total',s.bk.tot);sv('b-att',s.bk.att);sv('b-min',s.bk.min);}
+    if(s.hero){eid('h-pct').textContent=s.hero.pct;eid('h-bunk').textContent=s.hero.bunk;eid('h-need').textContent=s.hero.need;}
+    // Auto-recalc
+    if(s.cur&&s.cur.tot&&s.cur.att)setTimeout(doCur,400);
+  }catch(e){}
+}
+function sv(id,val){const el=eid(id);if(el&&val!=null&&val!=='')el.value=val;}
+
+/* ══════════════════════════════════════════════
+   SERVICE WORKER
+══════════════════════════════════════════════ */
+function registerSW(){
+  if(!('serviceWorker' in navigator))return;
+  const code=`
+const C='ac-v1';
+self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.add(self.location.href)));self.skipWaiting();});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});
+self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});
+  `;
+  const blob=new Blob([code],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+}
+</script>
+</body>
+</html>
